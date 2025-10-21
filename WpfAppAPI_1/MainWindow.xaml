@@ -1,0 +1,61 @@
+﻿<Window x:Class="WpfAppAPI_1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfAppAPI_1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Height="40" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="10">
+            <TextBlock Text="Выберите категорию" Margin="10" />
+            <ComboBox x:Name="cmbCategoriya" Width="200" Height="30"/>
+            <Button x:Name="btnLoad" Content="Загрузить"  Height="30" Width="100" Margin="20 0" Click="btnLoad_Click"/>
+
+        </StackPanel>
+        
+                <DataGrid  Grid.Row="1" x:Name="dgProducts" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+               
+                <DataGridTemplateColumn Width="300">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Продукт"/>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="15">
+                                <Image Source="{Binding ImageUrl}" Width="100" Height="100" Stretch="Fill"/>
+                                <TextBlock Text ="{Binding Title}" Margin="10 0" TextWrapping="Wrap" Width="150"/>
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Цена" Binding="{Binding Price}" Width="80"/>
+                <DataGridTextColumn Header="Категория" Binding="{Binding Category.Title}" Width="140"/>
+                
+                <DataGridTemplateColumn Width="300">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Магазин"/>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="15">
+                                <Image Source="{Binding Shop.ImageUrl}" Width="100" Height="100" Stretch="Fill"/>
+                                <TextBlock Text ="{Binding Shop.Title}" Margin="10 0"/>
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+               
+        </DataGrid>
+
+
+    </Grid>
+</Window>
