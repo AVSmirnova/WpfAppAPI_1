@@ -22,7 +22,7 @@ namespace WpfAppAPI_1
 
             httpClient = new System.Net.Http.HttpClient
             {
-                BaseAddress = new Uri("http://localhost:7255")
+                BaseAddress = new Uri("https://localhost:7255")
             };
 
            

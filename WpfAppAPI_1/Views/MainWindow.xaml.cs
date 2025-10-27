@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 using WpfAppAPI_1.Infrastructure;
 using WpfAppAPI_1.Models;
 
-namespace WpfAppAPI_1
+namespace WpfAppAPI_1.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
