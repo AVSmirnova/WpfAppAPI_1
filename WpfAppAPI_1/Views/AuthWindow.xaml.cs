@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WpfAppAPI_1.Infrastructure;
-using WpfAppAPI_1.Model;
+using WpfAppAPI_1.Model.Dto;
 
 namespace WpfAppAPI_1.Views
 {
@@ -22,6 +22,7 @@ namespace WpfAppAPI_1.Views
     public partial class AuthWindow : Window
     {
         ApiClient apiClient;
+      
         public AuthWindow()
         {
             InitializeComponent();
@@ -37,8 +38,20 @@ namespace WpfAppAPI_1.Views
             };
 
             var result = await apiClient.UserLogin(userRequestDto);
-            MessageBox.Show(result);
+            if (result == "True")
+            {
+                UserResponseDto userInfo = await apiClient.GetUserInfo();
 
+                DeliveryWindow deliveryWindow = new DeliveryWindow(userInfo);   
+                deliveryWindow.Show();
+            }
+            else
+            {
+                MessageBox.Show(result);
+
+            }
+
+            this.Close();
 
         }
 

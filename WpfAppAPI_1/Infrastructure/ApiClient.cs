@@ -8,8 +8,10 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using WpfAppAPI_1.Model;
+using WpfAppAPI_1.Model.Dto;
 using WpfAppAPI_1.Models;
 
 namespace WpfAppAPI_1.Infrastructure
@@ -20,6 +22,8 @@ namespace WpfAppAPI_1.Infrastructure
         private readonly System.Net.Http.HttpClient _httpClient;
 
         Dictionary<string, string> tokenDictionary;
+
+        static string token = "";
 
         public ApiClient(System.Net.Http.HttpClient httpClient)
         {
@@ -59,23 +63,72 @@ namespace WpfAppAPI_1.Infrastructure
         public async Task<string> UserLogin(LoginUserRequestDto loginUserRequestDto)
         {
             string message = "";
+            string t = "";
             var response = await _httpClient.PostAsJsonAsync("/user/login", loginUserRequestDto);
 
+            var result = response.Content.ReadAsStringAsync().Result;
             if (response.IsSuccessStatusCode)
             {
-                var result = response.Content.ReadAsStringAsync().Result;
+                
                 // Десериализация полученного JSON-объекта
                 tokenDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(result);
                 if (tokenDictionary != null)
                 {
-                    tokenDictionary.TryGetValue("token", out string token);
-                    message = "Авторизация успешна" + token;
+                    tokenDictionary.TryGetValue("token", out token);
+
+                    // создаем http-клиента с токеном 
+                    if (!string.IsNullOrWhiteSpace(token))
+                    {
+                        _httpClient.DefaultRequestHeaders.Authorization =
+                            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                    }
+
+                    message = "True";
                 }
+                
+               
             }
-            else {   message= "Авторизация не прошла"; }
+            else {   message= result; }
             return message;
 
         }
-               
+
+        // получаем информацию о юзере
+        public async Task<UserResponseDto> GetUserInfo()
+        {
+
+            var userInfo = await _httpClient.GetFromJsonAsync<UserResponseDto>("/user/info");
+            return userInfo ?? new UserResponseDto();
+
+        }        
+
+        // получаем информацию о доставках
+        public async Task<List<DeliveryResponseDto>> GetDeliveries()
+        {       
+                var deliveries = await _httpClient.GetFromJsonAsync<List<DeliveryResponseDto>>("/deliveries");
+                return deliveries ?? new List<DeliveryResponseDto>();
+            
+        }
+
+        public async Task<List<DeliveryResponseDto>> GetUserDeliveries()
+        {
+                var deliveries = await _httpClient.GetFromJsonAsync<List<DeliveryResponseDto>>("/deliveries/user/active");
+                return deliveries ?? new List<DeliveryResponseDto>();
+
+        }
+
+        //private HttpClient CreateClient(string accessToken="")
+        //{
+
+        //    if (!string.IsNullOrWhiteSpace(accessToken))
+        //    {
+        //        _httpClient.DefaultRequestHeaders.Authorization =
+        //            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+        //    }
+        //    return _httpClient;
+        //}
+
     }
 }

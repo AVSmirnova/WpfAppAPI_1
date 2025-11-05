@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfAppAPI_1.Model
+namespace WpfAppAPI_1.Model.Dto
 {
     public class LoginUserRequestDto
     {
