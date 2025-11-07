@@ -37,10 +37,10 @@ namespace WpfAppAPI_1.Views
                 Password=password.Text
             };
 
-            var result = await apiClient.UserLogin(userRequestDto);
+            var result = await apiClient.UserLoginAsync(userRequestDto);
             if (result == "True")
             {
-                UserResponseDto userInfo = await apiClient.GetUserInfo();
+                UserResponseDto userInfo = await apiClient.GetUserInfoAsync();
 
                 DeliveryWindow deliveryWindow = new DeliveryWindow(userInfo);   
                 deliveryWindow.Show();

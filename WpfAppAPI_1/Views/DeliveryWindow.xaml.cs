@@ -33,22 +33,46 @@ namespace WpfAppAPI_1.Views
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_currientUser != null)
+           try
+           {
+                Mouse.OverrideCursor = Cursors.Wait;
+                if (_currientUser != null)
+                {
 
-            {
-                MessageBox.Show(_currientUser.Role.Id.ToString());
-                if (_currientUser.Role.Id == 1)
-                {
-                   
-                    deliveryResponses = await apiClient.GetDeliveries();
+                    // MessageBox.Show(_currientUser.Role.Id.ToString());
+                    if (_currientUser.Role.Id == 1)
+                    {
+
+                        deliveryResponses = await apiClient.GetDeliveriesAsync();
+                    }
+                    else
+                    {
+                        deliveryResponses = await apiClient.GetUserDeliveriesAsync();
+                    }
+
+
                 }
-                else
-                {
-                    deliveryResponses = await apiClient.GetUserDeliveries();
-                }
+                    
+                } catch (Exception ex)
+           {
+                    MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                    deliveryResponses=new List<DeliveryResponseDto>();
             }
+            finally
+            {
+                   Mouse.OverrideCursor = null;
+                   dgDelivery.ItemsSource = deliveryResponses;
+             
+            }
+
+
+
+        }
+
+        private void dgDelivery_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             
-            dgDelivery.ItemsSource = deliveryResponses; 
 
         }
     }

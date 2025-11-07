@@ -47,7 +47,7 @@ namespace WpfAppAPI_1.Views
 
        private async Task<string> UserRegistration(User newUser)
         {
-            return await apiClient.RegistrUser(newUser);  
+            return await apiClient.RegistrUserAsync(newUser);  
         }
     }
 }

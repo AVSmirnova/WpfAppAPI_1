@@ -44,7 +44,7 @@ namespace WpfAppAPI_1.Infrastructure
             return products ?? new List<Product>();
         }
 
-        public async Task<string> RegistrUser(User user)
+        public async Task<string> RegistrUserAsync(User user)
         {
             using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/user/register", user);
             
@@ -60,10 +60,10 @@ namespace WpfAppAPI_1.Infrastructure
                 return content;
         }
 
-        public async Task<string> UserLogin(LoginUserRequestDto loginUserRequestDto)
+        public async Task<string> UserLoginAsync(LoginUserRequestDto loginUserRequestDto)
         {
             string message = "";
-            string t = "";
+           
             var response = await _httpClient.PostAsJsonAsync("/user/login", loginUserRequestDto);
 
             var result = response.Content.ReadAsStringAsync().Result;
@@ -95,7 +95,7 @@ namespace WpfAppAPI_1.Infrastructure
         }
 
         // получаем информацию о юзере
-        public async Task<UserResponseDto> GetUserInfo()
+        public async Task<UserResponseDto> GetUserInfoAsync()
         {
 
             var userInfo = await _httpClient.GetFromJsonAsync<UserResponseDto>("/user/info");
@@ -103,32 +103,44 @@ namespace WpfAppAPI_1.Infrastructure
 
         }        
 
-        // получаем информацию о доставках
-        public async Task<List<DeliveryResponseDto>> GetDeliveries()
+        // получаем информацию о всех доставках
+        public async Task<List<DeliveryResponseDto>> GetDeliveriesAsync()
         {       
                 var deliveries = await _httpClient.GetFromJsonAsync<List<DeliveryResponseDto>>("/deliveries");
                 return deliveries ?? new List<DeliveryResponseDto>();
             
         }
 
-        public async Task<List<DeliveryResponseDto>> GetUserDeliveries()
+        // получаем информацию о  доставках авторизованного пользователя
+        public async Task<List<DeliveryResponseDto>> GetUserDeliveriesAsync()
         {
                 var deliveries = await _httpClient.GetFromJsonAsync<List<DeliveryResponseDto>>("/deliveries/user/active");
                 return deliveries ?? new List<DeliveryResponseDto>();
 
         }
 
-        //private HttpClient CreateClient(string accessToken="")
-        //{
+        // получаем список продуктов по списку Id продуктов.
 
-        //    if (!string.IsNullOrWhiteSpace(accessToken))
-        //    {
-        //        _httpClient.DefaultRequestHeaders.Authorization =
-        //            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+        public async Task<List<Product>> GetProductsByIds(List<int> productIds)
+        {
+            if (productIds == null || !productIds.Any())
+                return new List<Product>();
 
-        //    }
-        //    return _httpClient;
-        //}
+            var idsParam = string.Join(",", productIds);
+            var url = $"/products?ids={idsParam}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<Product>>(content);
+            }
+
+            throw new HttpRequestException($"Ошибка при получении продуктов: {response.StatusCode}");
+        }
+
+
 
     }
 }
