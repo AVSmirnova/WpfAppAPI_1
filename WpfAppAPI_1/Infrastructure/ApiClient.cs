@@ -128,6 +128,7 @@ namespace WpfAppAPI_1.Infrastructure
 
             var idsParam = string.Join(",", productIds);
             var url = $"/products?ids={idsParam}";
+           // ids.Contains(x.Id)
 
             var response = await _httpClient.GetAsync(url);
 

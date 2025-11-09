@@ -70,10 +70,56 @@ namespace WpfAppAPI_1.Views
 
         }
 
-        private void dgDelivery_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void dgDelivery_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+            if (dgDelivery.SelectedItem is DeliveryResponseDto selectedProducts)
+            {
+                await LoadDeliveryProducts(selectedProducts);
+            }
 
         }
+
+        private async Task LoadDeliveryProducts(DeliveryResponseDto delivery)
+        {
+            try
+            {
+                //if (delivery.ProductDeliveries == null || !delivery.ProductDeliveries.Any())
+                //{
+                //    ClearProducts();
+                //    return;
+                //}
+
+                var productIds = delivery.ProductDeliveries.Select(pd => pd.ProductId).ToList();
+                
+
+                var deliveryProducts = await apiClient.GetProductsByIds(productIds);
+
+                var productsWithAmount = deliveryProducts.Select(product =>
+                {
+                    var amount = delivery.ProductDeliveries
+                        .First(pd => pd.ProductId == product.Id).Amount;
+
+                    return new
+                    {
+                        product.Id,
+                        product.Title,
+                        product.Price,
+                        product.ImageUrl,
+                        product.Category,
+                        product.Shop,
+                        AmountInDelivery = amount
+                    };
+                }).ToList();
+
+                dgProducts.ItemsSource = productsWithAmount;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке продуктов: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                //ClearProducts();
+            }
+        }
+
     }
 }
