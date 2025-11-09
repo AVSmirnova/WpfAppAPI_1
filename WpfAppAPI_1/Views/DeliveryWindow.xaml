@@ -33,8 +33,8 @@
             <DataGrid Grid.Row="1" x:Name="dgProducts" AutoGenerateColumns="False" Height="150" Width="400"
                       HorizontalAlignment="Left" Margin="10" SelectionChanged="dgDelivery_SelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Название продукта" Binding="{Binding Path= Id}"  Width="300"/>
-                    <DataGridTextColumn Header="Количество" Binding="{Binding Path= OpeningDateTime}" Width="*" />
+                    <DataGridTextColumn Header="Название продукта" Binding="{Binding Path= Title}"  Width="300"/>
+                    <DataGridTextColumn Header="Количество" Binding="{Binding Path= AmountInDelivery}" Width="*" />
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>

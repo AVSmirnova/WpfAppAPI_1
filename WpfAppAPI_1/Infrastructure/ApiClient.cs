@@ -128,17 +128,26 @@ namespace WpfAppAPI_1.Infrastructure
 
             var idsParam = string.Join(",", productIds);
             var url = $"/products?ids={idsParam}";
-           // ids.Contains(x.Id)
+         
 
             var response = await _httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
+
             {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Product>>(content);
+                return JsonSerializer.Deserialize<List<Product>>(content, options);
+
             }
 
-            throw new HttpRequestException($"Ошибка при получении продуктов: {response.StatusCode}");
+            throw new HttpRequestException($"Ошибка при получении продуктов: {response.StatusCode}"); 
+            
+            //var products = await _httpClient.GetFromJsonAsync<List<Product>>(url);
+            //return products ?? new List<Product>();
         }
 
 
